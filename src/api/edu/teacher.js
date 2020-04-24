@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-const api_name='eduservice/edu-teacher';
+const api_name='eduservice/teacher';
 
 export default{
     //条件查询讲师列表
