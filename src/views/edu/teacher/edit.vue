@@ -113,7 +113,7 @@ export default {
         //清空
         this.teacher = {
           sort:0,
-          avatar:process.env.OSS_PATH+"/avatar/default.jpg"
+          avatar:"/static/default.jpg"
         }
       }
     },
