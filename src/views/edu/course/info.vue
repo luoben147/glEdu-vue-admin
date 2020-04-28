@@ -39,7 +39,7 @@
       </el-form-item>
       <!-- 课程简介 TODO -->
       <el-form-item label="课程简介">
-        <tinymce :height="300" v-model="courseInfo.description" />
+        <tinymce :height="300" v-model="courseInfo.description" ref="content" />
       </el-form-item>
       <!-- 课程封面 TODO -->
       <el-form-item label="课程封面">
@@ -92,6 +92,7 @@ export default {
         cover: "/static/default.jpg", //课程封面图片路径(这里是oss里的默认图)
         price: 0 //课程价格
       },
+      courseId: "",
       teacherList: [], //讲师集合
       subjectList: [], //一级分类（它的children属性 就是二级分类）
       subjectValue: [], //课程分类选中的值 包含一级分类和二级分类
@@ -99,15 +100,47 @@ export default {
         value: "id",
         label: "title",
         children: "children",
-        expandTrigger: 'hover'
+        expandTrigger: "hover"
       }
     };
   },
-  created() {
-    this.getTeacherList();
-    this.getOneSubject();
+  watch: {
+    //监听
+    $route(to, from) {
+      //路由变化方式 当路由发生变化的时候执行
+      this.init();
+    }
+  },
+  mounted() {
+    this.init();
   },
   methods: {
+    init() {
+      if (this.$route.params && this.$route.params.id) {
+        this.courseId = this.$route.params.id;
+        this.getInfo();
+      } else {
+        //清空
+        this.courseInfo = {
+          cover: "/static/default.jpg"
+        };
+        this.subjectValue = [];
+        //清空编辑器
+        this.$refs.content.setContent("");
+      }
+      //初始化所有讲师
+      this.getTeacherList();
+      //初始化课程分类
+      this.getOneSubject();
+    },
+    //根据课程id 查询课程信息回显
+    getInfo() {
+      course.getCourseInfoById(this.courseId).then(res => {
+        this.courseInfo = res.data.item;
+        this.subjectValue.push(res.data.item.subjectParentId);
+        this.subjectValue.push(res.data.item.subjectId);
+      });
+    },
     //查询所有一级分类
     getOneSubject() {
       subject.getAllSubject().then(res => {
@@ -120,8 +153,8 @@ export default {
         this.teacherList = res.data.items;
       });
     },
-    //保存课程信息 跳转下一步
-    saveAndNext() {
+    //添加课程
+    addCourse() {
       course.addCourseInfo(this.courseInfo).then(res => {
         this.$message({
           type: "success",
@@ -132,18 +165,38 @@ export default {
         this.$router.push({ path: "/course/chapter/" + res.data.courseId });
       });
     },
+    //修改课程
+    updateCourse() {
+      course.updateCourseInfo(this.courseInfo).then(res => {
+        //提示
+        this.$message({
+          type: "success",
+          message: "修改课程信息成功!"
+        });
+        //跳转到第二步
+        this.$router.push({ path: "/course/chapter/" + this.courseId });
+      });
+    },
+    //保存课程信息 跳转下一步
+    saveAndNext() {
+      if (!this.courseInfo.id) {
+        //添加
+        this.addCourse();
+      } else {
+        this.updateCourse();
+      }
+    },
     //课程分类级联选择回调
     handleSubjecChange(value) {
-      console.log(value);
-      if(value.length>0){
-        this.courseInfo.subjectParentId=value[0]
-        this.courseInfo.subjectId=value[1]
+      if (value.length > 0) {
+        this.courseInfo.subjectParentId = value[0];
+        this.courseInfo.subjectId = value[1];
       }
     },
     //封面上传成功
     handleCoverSuccess(res, file, fileList) {
-      console.log(res); // 上传响应
-      console.log(URL.createObjectURL(file.raw)); // base64编码
+      //console.log(res); // 上传响应
+      //console.log(URL.createObjectURL(file.raw)); // base64编码
       this.courseInfo.cover = res.data.url;
     },
     //封面上传之前
