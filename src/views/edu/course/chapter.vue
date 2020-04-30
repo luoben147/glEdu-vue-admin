@@ -74,7 +74,28 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="上传视频">
-          <!-- TODO -->
+          <el-upload
+            :on-success="handleVodUploadSuccess"
+            :on-remove="handleVodRemove"
+            :before-remove="beforeVodRemove"
+            :on-exceed="handleUploadExceed"
+            :file-list="fileList"
+            :action="BASE_API+'/eduvod/video/uploadALiyVideo'"
+            :limit="1"  
+            class="upload-demo"
+          >
+            <el-button size="small" type="primary">上传视频</el-button>
+            <el-tooltip placement="right-end">
+              <div slot="content">
+                最大支持1G，
+                <br />支持3GP、ASF、AVI、DAT、DV、FLV、F4V、
+                <br />GIF、M2T、M4V、MJ2、MJPEG、MKV、MOV、MP4、
+                <br />MPE、MPG、MPEG、MTS、OGG、QT、RM、RMVB、
+                <br />SWF、TS、VOB、WMV、WEBM 等视频格式上传
+              </div>
+              <i class="el-icon-question" />
+            </el-tooltip>
+          </el-upload>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -109,7 +130,8 @@ export default {
         title: "",
         sort: 0,
         isFree: false,
-        videoSourceId: ""
+        videoSourceId: "",
+        videoOriginalName:""  //视频名称
       },
       chapterFormRules: {
         //章节验证规则对象
@@ -121,7 +143,9 @@ export default {
         title: [{ required: true, message: "请填写课时标题", trigger: "blur" }],
         sort: [{ required: true, message: "请填写课时排序", trigger: "blur" }],
         isFree: [{ required: true, message: "请选择是否收费", trigger: "blur" }]
-      }
+      },
+      fileList:[],//上传文件列表
+      BASE_API:process.env.BASE_API //接口地址   
     };
   },
   created() {
@@ -132,6 +156,33 @@ export default {
     }
   },
   methods: {
+    //上传视频成功
+    handleVodUploadSuccess(response, file, fileList){
+      this.videoForm.videoSourceId = response.data.videoId
+      this.videoForm.videoOriginalName=file.name
+    },
+    //文件超出个数限制时的钩子
+    handleUploadExceed(files, fileList){
+        this.$message.warning('想要重新上传视频，请先删除已上传的视频')
+    },
+    //文件列表移除文件时的钩子
+    handleVodRemove(file, fileList){
+        //调用后台接口删除视频
+        video.removeAliyVod(this.videoForm.videoSourceId).then(res=>{
+            this.$message({
+              type: 'success',
+              message: res.message
+            })
+            //文件列表清空
+            this.fileList=[]  
+            this.videoForm.videoSourceId=""
+            this.videoForm.videoOriginalName = ''
+        })
+    },
+    //删除文件之前的钩子 ，若返回 false 或者返回 Promise 且被 reject，则停止删除
+    beforeVodRemove(file, fileList){
+       return this.$confirm(`确定移除 ${ file.name }？`);
+    },
     //==============================小节相关================================
     //添加小节弹框
     openVideo(chapterId) {

@@ -46,5 +46,20 @@ export default{
             url:`/${api_name}/publishCourse/${id}`,
             method: 'put',
         })
+    },
+    //查询所有课程
+    pageQuery(page,limit,courseQuery){
+        return request({
+            url:`/${api_name}/${page}/${limit}`,
+            method: 'get',
+            params:courseQuery
+        })
+    },
+    //删除课程
+    removeCourseById(id){
+        return request({
+            url:`/${api_name}/${id}`,
+            method: 'delete'
+        })
     }
 }
