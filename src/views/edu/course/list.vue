@@ -112,7 +112,7 @@ export default {
       this.getList();
     },
     handleDelete(id) {
-      this.$confirm("此操作将永久删除讲师记录, 是否继续?", "提示", {
+      this.$confirm("此操作将永久删除课程记录, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"

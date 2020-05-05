@@ -222,6 +222,7 @@ export default {
       this.dialogVideoFormVisible = true;
       video.getById(videoId).then(response => {
         this.videoForm = response.data.item;
+        this.fileList = [{'name': this.videoForm.videoOriginalName}]
       });
     },
     //修改课时提交
@@ -250,19 +251,23 @@ export default {
             type: "success",
             message: "删除课时成功!"
           });
+        },err =>{
+          console.log('err',err);
         });
     },
     //重置小节From
     helpSaveVideo() {
-      this.dialogVideoFormVisible = false; // 如果保存成功则关闭对话框
-      this.getChapterVideo(); // 刷新列表
+      this.dialogVideoFormVisible = false // 如果保存成功则关闭对话框
+      this.getChapterVideo() // 刷新列表
       this.videoForm = {
         title: "",
         sort: 0,
         isFree: false,
-        videoSourceId: ""
+        videoSourceId: "",
+        videoOriginalName : ""
       };
-      this.saveVideoBtnDisabled = false;
+      this.fileList=[]
+      this.saveVideoBtnDisabled = false
     },
     //==============================章节相关================================
     //编辑章节按钮
