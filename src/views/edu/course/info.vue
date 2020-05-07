@@ -89,7 +89,7 @@ export default {
         teacherId: "", //讲师ID
         lessonNum: 0, //总课时
         description: "", //课程简介
-        cover: "/static/default.jpg", //课程封面图片路径(这里是oss里的默认图)
+        cover: "http://thirdwx.qlogo.cn/mmopen/vi_32/DYAIOgq83eoj0hHXhgJNOTSOFsS4uZs8x1ConecaVOB8eIl115xmJZcT4oCicvia7wMEufibKtTLqiaJeanU2Lpg3w/132", //课程封面图片路径(这里是oss里的默认图)
         price: 0 //课程价格
       },
       courseId: "",
@@ -122,7 +122,7 @@ export default {
       } else {
         //清空
         this.courseInfo = {
-          cover: "/static/default.jpg"
+          cover: "http://thirdwx.qlogo.cn/mmopen/vi_32/DYAIOgq83eoj0hHXhgJNOTSOFsS4uZs8x1ConecaVOB8eIl115xmJZcT4oCicvia7wMEufibKtTLqiaJeanU2Lpg3w/132"
         };
         this.subjectValue = [];
         //清空编辑器

@@ -113,7 +113,7 @@ export default {
         //清空
         this.teacher = {
           sort:0,
-          avatar:"/static/default.jpg"
+          avatar:"http://thirdwx.qlogo.cn/mmopen/vi_32/DYAIOgq83eoj0hHXhgJNOTSOFsS4uZs8x1ConecaVOB8eIl115xmJZcT4oCicvia7wMEufibKtTLqiaJeanU2Lpg3w/132"
         }
       }
     },
