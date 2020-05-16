@@ -88,7 +88,11 @@ export default {
 
     save(){
       this.saveBtnDisabled = true
-      var ids = this.$refs.tree.getCheckedKeys().join(",");
+      const keys=[
+                    ...this.$refs.tree.getCheckedKeys(),    //则返回目前被选中的节点的 key 所组成的数组
+                    ...this.$refs.tree.getHalfCheckedKeys() //则返回目前半选中的节点的 key 所组成的数组
+                ]
+      var ids = keys.join(",");
       //vue elementUI tree树形控件获取父节点ID的实例
       //node_modules\element-ui\lib\element-ui.common.js
       //25348行修改源码
